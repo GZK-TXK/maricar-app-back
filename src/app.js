@@ -1,0 +1,31 @@
+import express from "express"
+import carRoutes from "./routes/carRoutes.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import mongoConexion from "./config/db.js";
+
+dotenv.config();
+
+const app=express();
+const port = process.env.PORT 
+
+// Para procesar datos en formato JSON (ej. APIs)
+app.use(express.json());
+
+// Para procesar datos de formularios HTML (application/x-www-form-urlencoded)
+app.use(express.urlencoded({ extended: true }));
+
+mongoConexion()
+    .catch(()=>console.log('error al conectar a la bdd'))
+
+
+app.get("/testapi", (req, res) => {
+  res.send("API MariCar working");
+});
+
+
+app.use("/api/v1/cars", carRoutes )
+
+app.listen(port,()=>{
+    console.log(`Servidor a la escucha ${port}`)
+})
