@@ -11,6 +11,11 @@ const carSchema = new Schema({
     required: true,
     trim: true,
   },
+  plate:{
+    type: String,
+    required: true,
+    trim: true,
+  },
   category: {
     type: String,
     required: true,
@@ -34,3 +39,4 @@ const carSchema = new Schema({
 });
 
 export default model("Cars", carSchema);
+

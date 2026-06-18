@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import mongoConexion from "./config/db.js";
 
+
 dotenv.config();
 
 const app=express();
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoConexion()
-    .catch(()=>console.log('error al conectar a la bdd'))
+    .catch((error)=>console.log('error al conectar a la bdd'))
 
 
 app.get("/testapi", (req, res) => {
