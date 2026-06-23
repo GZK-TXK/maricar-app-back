@@ -3,12 +3,21 @@ import carRoutes from "./routes/carRoutes.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import mongoConexion from "./config/db.js";
+import cors from "cors";
 
 
 dotenv.config();
 
 const app=express();
 const port = process.env.PORT 
+
+const whitelist= [
+    'http://localhost:5173'
+]
+
+app.use(cors({
+    origin: whitelist,
+}))
 
 // Para procesar datos en formato JSON (ej. APIs)
 app.use(express.json());
