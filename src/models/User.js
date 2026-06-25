@@ -28,7 +28,12 @@ const userSchema = new Schema({
     },
     direction: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
+    },
+    phone:{
+        type: Number,
+        required: true,
+        trim:true,
     }
 })

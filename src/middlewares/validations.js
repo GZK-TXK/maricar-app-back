@@ -14,4 +14,17 @@ export const validateCar=[
     check("pricePerDay", "The price must be higher than 0").custom((value) => value > 0),
 ]
 
-export const user=[]
+export const validateUser=[
+    check("name", "Name is required").not().isEmpty(),
+    check("name", "Name must be text").isString(),
+    check("surname", "Surname must be text").isString(),
+    check("email", "Email is required").not().isEmpty(),
+    check("email", "Email must be text").isString(),
+    check("password", "Password is required").not().isEmpty(),
+    check("password", "Password must be text").isString(),
+    check("birthday", "Birthday is required").not().isEmpty(),
+    check("birthday", "Birthday must be a date").isDate(),
+    check("direction", "Direction must be text").isString(),
+    check("phone", "Phone is required").not().isEmpty(),
+    check("phone", "Phone must be text").isNumeric(),    ,
+]

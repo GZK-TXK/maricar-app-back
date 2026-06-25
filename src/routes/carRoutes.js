@@ -1,5 +1,4 @@
 import express from "express"
-
 import carsCotrollers from "../controllers/carControllers.js";
 import { validateImputs } from "../middlewares/validateInputs.js";
 import { validateCar } from "../middlewares/validations.js";

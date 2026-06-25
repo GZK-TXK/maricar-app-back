@@ -71,7 +71,7 @@ const carsCotrollers = {
             console.log(getCar)
             res.status(200).json({
                 ok: true,
-                msg: 'Obteniendo coche por su id',
+                msg: 'Obteniendo coche',
                 data: getCar
             })
 
@@ -102,7 +102,7 @@ const carsCotrollers = {
     },
     deleteCar: async (req, res) => {
         try {
-            const deleteCar = await Cars.findByIdAndDelete(req.params.id,)
+            const deleteCar = await Cars.findByIdAndDelete(req.params.id)
             res.status(200).json({
                 ok: true,
                 msg: 'Borrando coche'
