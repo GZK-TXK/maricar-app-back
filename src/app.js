@@ -12,7 +12,8 @@ const app=express();
 const port = process.env.PORT 
 
 const whitelist= [
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://maricar-app-front-cz99f6oac-maricar.vercel.app/'
 ]
 
 app.use(cors({
