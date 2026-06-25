@@ -13,11 +13,11 @@ const port = process.env.PORT
 
 const whitelist= [
     'http://localhost:5173',
-    'https://maricar-app-front-cz99f6oac-maricar.vercel.app/'
+    'https://maricar-app-front-5xxfrspz5-maricar.vercel.app'
 ]
 
 app.use(cors({
-    origin: '*',
+    origin: whitelist,
 }))
 
 // Para procesar datos en formato JSON (ej. APIs)
