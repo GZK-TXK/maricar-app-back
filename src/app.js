@@ -17,7 +17,7 @@ const whitelist= [
 ]
 
 app.use(cors({
-    origin: whitelist,
+    origin: '*',
 }))
 
 // Para procesar datos en formato JSON (ej. APIs)
