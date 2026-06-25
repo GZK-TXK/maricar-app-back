@@ -37,3 +37,5 @@ const userSchema = new Schema({
         trim:true,
     }
 })
+
+export default model("User",userSchema)

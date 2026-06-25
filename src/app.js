@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import mongoConexion from "./config/db.js";
 import cors from "cors";
+import { userRoutes } from "./routes/userRoutes.js"
 
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.get("/testapi", (req, res) => {
 
 
 app.use("/api/v1/cars", carRoutes )
+app.use("/api/v1/users", userRoutes )
 
 app.listen(port,()=>{
     console.log(`Servidor a la escucha ${port}`)

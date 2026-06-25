@@ -1,7 +1,7 @@
-import React from 'react'
+import { model, Schema } from 'mongoose'
 import Users from '../models/User.js'
 export const userController = {
-    createUser: async (req, res) => {
+    create: async (req, res) => {
         try {
             const user = req.body
             const usuario = await Users.findOne({ email: user.email })
@@ -21,7 +21,7 @@ export const userController = {
             })
         }
         catch (error) {
-            res.estatus(500).json({
+            res.status(500).json({
                 ok: false,
                 msg: 'Error, ask Maricarmen'
             })
@@ -30,7 +30,7 @@ export const userController = {
     },
     getAllUsers: async (req, res) => {
         try {
-            const getUsers = Users.find({})
+            const getUsers = await Users.find({})
             res.status(200).json({
                 ok: true,
                 msg: 'Obteniendo usuarios',
@@ -70,13 +70,13 @@ export const userController = {
         }catch(error){
             res.status(500).json({
                 ok:false,
-                msg: 'Error aski Maricarmen'
+                msg: 'Error ask Maricarmen'
             })
         }
     },
     deleteUser: async (req,res)=>{
         try{
-            const deleteUser= await Users.findByIdAndDelete(req.params. id)
+            const deleteUser= await Users.findByIdAndDelete(req.params.id)
             res.status(200).json({
                 ok: true,
                 msg:"Borrando usuario"
@@ -89,3 +89,4 @@ export const userController = {
         }
     }
 }
+
