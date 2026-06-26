@@ -32,6 +32,7 @@ export const authController = {
             res.status(500).json({
                 ok: false,
                 msg: "Error en el registro de usuario",
+                error: error.message
             });
         }
     },

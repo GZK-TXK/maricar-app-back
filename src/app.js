@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import mongoConexion from "./config/db.js";
 import cors from "cors";
 import { userRoutes } from "./routes/userRoutes.js"
+import { authRoutes } from "./routes/authRoutes.js";
 
 
 dotenv.config();
@@ -21,14 +22,14 @@ app.use(cors({
     origin: whitelist,
 }))
 
-// Para procesar datos en formato JSON (ej. APIs)
+// Para procesar datos en formato JSON
 app.use(express.json());
 
-// Para procesar datos de formularios HTML (application/x-www-form-urlencoded)
+// Para procesar datos de formularios HTML 
 app.use(express.urlencoded({ extended: true }));
 
 mongoConexion()
-    .catch((error)=>console.log('error al conectar a la bdd'))
+    .catch((error)=>console.log('Error al conectar a la bdd'))
 
 
 app.get("/testapi", (req, res) => {
@@ -38,6 +39,7 @@ app.get("/testapi", (req, res) => {
 
 app.use("/api/v1/cars", carRoutes )
 app.use("/api/v1/users", userRoutes )
+app.use("/api/v1/auth", authRoutes)
 
 app.listen(port,()=>{
     console.log(`Servidor a la escucha ${port}`)
