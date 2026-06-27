@@ -66,8 +66,7 @@ const carsCotrollers = {
 
     getCar: async (req, res) => {
         try {
-            const getCar = await Cars.findById(req.params.id, 'brand model pricePerDay available');
-            console.log(getCar)
+            const getCar = await Cars.findById(req.params.id);
             res.status(200).json({
                 ok: true,
                 msg: 'Obteniendo coche',

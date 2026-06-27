@@ -34,6 +34,10 @@ const carSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  unavailableDates: [{
+    start: { type: Date, required: true },
+    end: { type: Date, required: true }
+}],
 }, {
   timestamps: true,
 });
