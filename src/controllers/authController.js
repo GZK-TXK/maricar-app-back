@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export const authController = {
     register: async (req, res) => {
         try {
-            const { name, email, password, birthday, phone } = req.body;
+            const { name, surname, email, password, direction, birthday, phone } = req.body;
 
             const existUser = await User.findOne({ email });
             if (existUser) {
@@ -14,7 +14,7 @@ export const authController = {
                 });
             }
 
-            const user = new User({ name, email, password, birthday, phone });
+            const user = new User({ name, surname, email, password, direction, birthday, phone });
             await user.save();
 
             const token = jwt.sign(

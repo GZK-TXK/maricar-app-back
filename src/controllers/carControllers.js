@@ -11,9 +11,6 @@ const carsCotrollers = {
 
             const car = req.body
 
-            //     //validar los datos middleware
-
-
             // comprobar si existe el coche retornar 400
             const coche = await Cars.findOne({ plate: car.plate })
             console.log(coche)
@@ -24,6 +21,8 @@ const carsCotrollers = {
                     msg: 'Ya hay un coche con esa matricula'
                 })
             }
+
+            if (req.file) car.imageUrl = "/uploads/" + req.file.filename
 
             const newCar = await new Cars(car)
             console.log(newCar)

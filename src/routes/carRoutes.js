@@ -2,16 +2,12 @@ import express from "express"
 import carsCotrollers from "../controllers/carControllers.js";
 import { validateImputs } from "../middlewares/validateInputs.js";
 import { validateCar } from "../middlewares/validations.js";
+import { upload } from "../middlewares/upload.js"
 
 const carRoutes = express.Router();
 
 //POST /cars/api/v1/
-carRoutes.post('/',[
-   validateCar,
-   validateImputs
-],
-  carsCotrollers.create
-);
+carRoutes.post('/', upload.single("image"), [ validateCar, validateImputs ], carsCotrollers.create)
 
 //GET /cars/api/v1/cars/
 carRoutes.get('/',carsCotrollers.getAllCars)
@@ -22,7 +18,7 @@ carRoutes.get('/:id', carsCotrollers.getCar)
 
 
 //PUT /cars/api/v1/cars/:id
-carRoutes.put('/:id', carsCotrollers.updateCar)
+carRoutes.put('/:id', upload.single("image"), carsCotrollers.updateCar)
 
 
 //DELETE /cars/api/v1/cars/:id
