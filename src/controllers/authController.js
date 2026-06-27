@@ -29,6 +29,7 @@ export const authController = {
                 data: { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } },
             });
         } catch (error) {
+            console.error("Error en register:", error)
             res.status(500).json({
                 ok: false,
                 msg: "Error en el registro de usuario",
@@ -69,6 +70,7 @@ export const authController = {
                 data: { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } },
             });
         } catch (error) {
+            console.error("Error en login:", error)
             res.status(500).json({
                 ok: false,
                 msg: "Error de inicio de sesión",
