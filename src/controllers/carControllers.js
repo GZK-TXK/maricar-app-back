@@ -84,6 +84,9 @@ const carsCotrollers = {
     updateCar: async (req, res) => {
         try {
             if (req.file) req.body.imageUrl = "/uploads/" + req.file.filename
+            if (req.body.unavailableDates && typeof req.body.unavailableDates === 'string') {
+                req.body.unavailableDates = JSON.parse(req.body.unavailableDates)
+            }
             const updateCar = await Cars.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
             console.log(updateCar)
             res.status(200).json({
