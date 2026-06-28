@@ -83,6 +83,7 @@ const carsCotrollers = {
     },
     updateCar: async (req, res) => {
         try {
+            if (req.file) req.body.imageUrl = "/uploads/" + req.file.filename
             const updateCar = await Cars.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
             console.log(updateCar)
             res.status(200).json({
@@ -92,6 +93,7 @@ const carsCotrollers = {
             })
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({
                 ok: false,
                 msg: 'Error ask Maricarmen'

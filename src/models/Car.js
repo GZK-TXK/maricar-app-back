@@ -32,7 +32,7 @@ const carSchema = new Schema({
   },
   available: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   unavailableDates: [{
     start: { type: Date, required: true },
@@ -43,4 +43,3 @@ const carSchema = new Schema({
 });
 
 export default model("Cars", carSchema);
-
