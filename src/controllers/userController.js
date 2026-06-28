@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose'
 import Users from '../models/User.js'
+import bcrypt from "bcryptjs"
 export const userController = {
     create: async (req, res) => {
         try {
@@ -61,6 +62,10 @@ export const userController = {
     },
     updateUser: async (req,res)=>{
         try{
+            if (req.body.password) {
+                const salt = await bcrypt.genSalt(10);
+                req.body.password = await bcrypt.hash(req.body.password, salt);
+            }
             const updateUser = await Users.findByIdAndUpdate(req.params.id,req.body,{new:true, runValidators: true})
             res.status(200).json({
                 ok:true,
