@@ -26,5 +26,12 @@ export const validateUser=[
     check("birthday", "Birthday must be a date").isDate(),
     check("direction", "Direction must be text").isString(),
     check("phone", "Phone is required").not().isEmpty(),
-    check("phone", "Phone must be text").isNumeric(),    ,
+    check("phone", "Phone must be text").isNumeric(),
+]
+
+export const validateContact = [
+    check("name", "El nombre es obligatorio").not().isEmpty(),
+    check("email", "Email invalido").isEmail(),
+    check("phone", "El telefono es obligatorio").not().isEmpty(),
+    check("carInfo", "La informacion del coche es obligatoria").not().isEmpty(),
 ]
