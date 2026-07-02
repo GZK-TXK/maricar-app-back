@@ -1,40 +1,32 @@
 import Cars from '../models/Car.js'
+import { cloudinary } from '../config/cloudinary.js'
+
+const deleteFromCloudinary = async (imageUrl) => {
+    if (!imageUrl || imageUrl.startsWith('http')) return
+    const publicId = imageUrl
+    await cloudinary.uploader.destroy(publicId)
+}
 
 const carsCotrollers = {
 
-
-
     create: async (req, res) => {
         try {
-            console.log('Creando......')
-            //recoger los datos del formulario
-
             const car = req.body
-
-            // comprobar si existe el coche retornar 400
             const coche = await Cars.findOne({ plate: car.plate })
-            console.log(coche)
-
             if (coche) {
                 return res.status(403).json({
                     ok: false,
                     msg: 'Ya hay un coche con esa matricula'
                 })
             }
-
-            if (req.file) car.imageUrl = "/uploads/" + req.file.filename
-
+            if (req.file) car.imageUrl = req.file.path
             const newCar = await new Cars(car)
-            console.log(newCar)
             const carSaved = await newCar.save()
-
-
             res.status(200).json({
                 ok: true,
                 msg: 'Creando cars.',
                 data: carSaved
             })
-
         } catch (error) {
             console.log(error)
             res.status(500).json({
@@ -42,13 +34,11 @@ const carsCotrollers = {
                 msg: 'Error ask Maricarmen'
             })
         }
-
     },
 
     getAllCars: async (req, res) => {
         try {
             const getCars = await Cars.find({})
-            console.log(getCars)
             res.status(200).json({
                 ok: true,
                 msg: 'Obteniendo cars.',
@@ -60,9 +50,7 @@ const carsCotrollers = {
                 msg: 'Error ask Maricarmen'
             })
         }
-
     },
-
 
     getCar: async (req, res) => {
         try {
@@ -72,29 +60,30 @@ const carsCotrollers = {
                 msg: 'Obteniendo coche',
                 data: getCar
             })
-
         } catch (error) {
             res.status(500).json({
                 ok: false,
                 msg: 'Error ask Maricarmen'
             })
         }
-
     },
+
     updateCar: async (req, res) => {
         try {
-            if (req.file) req.body.imageUrl = "/uploads/" + req.file.filename
+            if (req.file) {
+                const oldCar = await Cars.findById(req.params.id)
+                if (oldCar?.imageUrl) await deleteFromCloudinary(oldCar.imageUrl)
+                req.body.imageUrl = req.file.path
+            }
             if (req.body.unavailableDates && typeof req.body.unavailableDates === 'string') {
                 req.body.unavailableDates = JSON.parse(req.body.unavailableDates)
             }
             const updateCar = await Cars.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-            console.log(updateCar)
             res.status(200).json({
                 ok: true,
                 msg: 'Actualizando coche',
                 data: updateCar
             })
-
         } catch (error) {
             console.log(error)
             res.status(500).json({
@@ -103,9 +92,12 @@ const carsCotrollers = {
             })
         }
     },
+
     deleteCar: async (req, res) => {
         try {
-            const deleteCar = await Cars.findByIdAndDelete(req.params.id)
+            const car = await Cars.findById(req.params.id)
+            if (car?.imageUrl) await deleteFromCloudinary(car.imageUrl)
+            await Cars.findByIdAndDelete(req.params.id)
             res.status(200).json({
                 ok: true,
                 msg: 'Borrando coche'
@@ -118,6 +110,5 @@ const carsCotrollers = {
         }
     }
 }
-
 
 export default carsCotrollers
