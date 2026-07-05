@@ -2,9 +2,14 @@ import Cars from '../models/Car.js'
 import { cloudinary } from '../config/cloudinary.js'
 
 const deleteFromCloudinary = async (imageUrl) => {
-    if (!imageUrl || imageUrl.startsWith('http')) return
-    const publicId = imageUrl
-    await cloudinary.uploader.destroy(publicId)
+    if (!imageUrl || !imageUrl.includes('cloudinary')) return
+    const segments = imageUrl.split('/')
+    const publicId = segments.slice(-2).join('/').split('.')[0]
+    try {
+        await cloudinary.uploader.destroy(publicId)
+    } catch (error) {
+        console.log('Error al eliminar imagen de Cloudinary:', error.message)
+    }
 }
 
 const carsCotrollers = {
