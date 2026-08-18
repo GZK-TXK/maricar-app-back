@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose'
 import Users from '../models/User.js'
 import bcrypt from "bcryptjs"
+
 export const userController = {
     create: async (req, res) => {
         try {
@@ -13,7 +13,8 @@ export const userController = {
                 })
             }
             const newUser = await new Users(user)
-            const userSaved = await newUser.save()
+            await newUser.save()
+            const userSaved = await Users.findById(newUser._id).select('-password')
 
             res.status(200).json({
                 ok: true,
@@ -31,7 +32,7 @@ export const userController = {
     },
     getAllUsers: async (req, res) => {
         try {
-            const getUsers = await Users.find({})
+            const getUsers = await Users.find({}, 'name surname email role birthday direction phone')
             res.status(200).json({
                 ok: true,
                 msg: 'Obteniendo usuarios',
@@ -46,7 +47,7 @@ export const userController = {
     },
     getUser: async (req,res)=>{
         try{
-            const getUser = await Users.findById(req.params.id, 'name surname email password birthday direction' )
+            const getUser = await Users.findById(req.params.id, 'name surname email role birthday direction phone' )
             res.status(200).json({
                 ok:true,
                 msg: 'Obteniendo usuario',
@@ -66,7 +67,7 @@ export const userController = {
                 const salt = await bcrypt.genSalt(10);
                 req.body.password = await bcrypt.hash(req.body.password, salt);
             }
-            const updateUser = await Users.findByIdAndUpdate(req.params.id,req.body,{new:true, runValidators: true})
+            const updateUser = await Users.findByIdAndUpdate(req.params.id,req.body,{new:true, runValidators: true}).select('-password')
             res.status(200).json({
                 ok:true,
                 msg:'Cargando usuario',
@@ -94,4 +95,3 @@ export const userController = {
         }
     }
 }
-

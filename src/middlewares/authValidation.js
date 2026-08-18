@@ -14,10 +14,9 @@ export const authValidation = (req,res,next) => {
         req.user = decoded;
         next();
     } catch(error){
-        return res.status(500).json({
-        ok:false,
-        msg: "Token no valido o ya ha expirado."
+        return res.status(401).json({
+            ok:false,
+            msg: "Token no valido o ya ha expirado."
         })
-
     }
 }

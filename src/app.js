@@ -7,6 +7,8 @@ import cors from "cors";
 import { userRoutes } from "./routes/userRoutes.js"
 import { authRoutes } from "./routes/authRoutes.js";
 import { contactRoutes } from "./routes/contactRoutes.js";
+import { reservationRoutes } from "./routes/reservationRoutes.js";
+import { stripeWebhook } from "./controllers/stripeWebhookController.js";
 
 dotenv.config();
 
@@ -32,6 +34,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.post("/api/v1/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook)
+
 // Para procesar datos en formato JSON
 app.use(express.json());
 
@@ -50,6 +54,7 @@ app.use("/api/v1/cars", carRoutes )
 app.use("/api/v1/users", userRoutes )
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/contact", contactRoutes)
+app.use("/api/v1/reservations", reservationRoutes)
 app.listen(port,()=>{
     console.log(`Servidor a la escucha ${port}`)
 })
