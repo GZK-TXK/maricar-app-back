@@ -1,4 +1,4 @@
-import {Schema,model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 const carSchema = new Schema({
   brand: {
@@ -11,10 +11,13 @@ const carSchema = new Schema({
     required: true,
     trim: true,
   },
-  plate:{
+  plate: {
     type: String,
     required: true,
     trim: true,
+    uppercase: true,
+    unique: true,
+    index: true,
   },
   category: {
     type: String,
@@ -37,7 +40,7 @@ const carSchema = new Schema({
   unavailableDates: [{
     start: { type: Date, required: true },
     end: { type: Date, required: true }
-}],
+  }],
 }, {
   timestamps: true,
 });

@@ -1,7 +1,21 @@
 import express from "express"
+import rateLimit from "express-rate-limit"
 import { authController } from "../controllers/authController.js"
+import { validateRegister, validateLogin } from "../middlewares/validations.js"
+import { validateImputs } from "../middlewares/validateInputs.js"
+import { authValidation } from "../middlewares/authValidation.js"
 
-export const authRoutes = express.Router();
+export const authRoutes = express.Router()
 
-authRoutes.post("/register", authController.register)
-authRoutes.post("/login", authController.login)
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { ok: false, msg: "Demasiados intentos, prueba más tarde" },
+})
+
+authRoutes.post("/register", authLimiter, validateRegister, validateImputs, authController.register)
+authRoutes.post("/login", authLimiter, validateLogin, validateImputs, authController.login)
+authRoutes.get("/me", authValidation, authController.me)
+authRoutes.post("/logout", authController.logout)

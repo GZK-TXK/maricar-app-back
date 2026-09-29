@@ -6,22 +6,26 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
+        maxlength: 80,
     },
     surname: {
         type: String,
-        required: false,
         trim: true,
+        maxlength: 80,
     },
     email: {
         type: String,
         required: true,
         trim: true,
+        lowercase: true,
         unique: true,
+        index: true,
     },
     password: {
         type: String,
         required: true,
-        trim: true,
+        minlength: 8,
+        select: false,
     },
     role: {
         type: String,
@@ -31,22 +35,21 @@ const userSchema = new Schema({
     birthday: {
         type: Date,
         required: true,
-        trim: true,
     },
     direction: {
         type: String,
-        required: false,
         trim: true,
+        maxlength: 200,
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
         trim: true,
+        maxlength: 20,
     }
 })
 
 //hashear password
-
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;
     const salt = await bcrypt.genSalt(10);
@@ -54,7 +57,6 @@ userSchema.pre("save", async function () {
 });
 
 //comparar si las password son iguales
-
 userSchema.methods.comparePassword = async function (passwordNew) {
     return bcrypt.compare(passwordNew, this.password);
 };

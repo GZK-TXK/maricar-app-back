@@ -1,14 +1,24 @@
 import Reservation from '../models/Reservation.js'
 import Cars from '../models/Car.js'
+import mongoose from 'mongoose'
 import { stripe, getRedirectUrls } from '../config/stripe.js'
 
-const hasDateConflict = (car, startDate, endDate) => {
-    return car.unavailableDates.some(range => {
-        const start = new Date(range.start)
-        const end = new Date(range.end)
-        return startDate <= end && endDate >= start
+const isValidId = (id) => mongoose.Types.ObjectId.isValid(id)
+
+const rangesOverlap = (aStart, aEnd, bStart, bEnd) => aStart <= bEnd && aEnd >= bStart
+
+const hasBlockedRange = (car, start, end) =>
+    (car.unavailableDates || []).some(r =>
+        rangesOverlap(new Date(r.start), new Date(r.end), start, end)
+    )
+
+const hasReservationConflict = (carId, start, end) =>
+    Reservation.exists({
+        car: carId,
+        status: { $in: ['pending', 'paid'] },
+        startDate: { $lte: end },
+        endDate: { $gte: start },
     })
-}
 
 export const reservationController = {
 
@@ -19,8 +29,16 @@ export const reservationController = {
             const start = new Date(startDate)
             const end = new Date(endDate)
 
+            if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+                return res.status(400).json({ ok: false, msg: 'Fechas inválidas' })
+            }
             if (start >= end) {
                 return res.status(400).json({ ok: false, msg: 'La fecha de fin debe ser posterior a la de inicio' })
+            }
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+            if (start < today) {
+                return res.status(400).json({ ok: false, msg: 'No puedes reservar fechas pasadas' })
             }
 
             const car = await Cars.findById(carId)
@@ -30,8 +48,11 @@ export const reservationController = {
             if (!car.available) {
                 return res.status(400).json({ ok: false, msg: 'El coche no está disponible para reservar' })
             }
-            if (hasDateConflict(car, start, end)) {
+            if (hasBlockedRange(car, start, end)) {
                 return res.status(409).json({ ok: false, msg: 'El coche ya está reservado en esas fechas' })
+            }
+            if (await hasReservationConflict(car._id, start, end)) {
+                return res.status(409).json({ ok: false, msg: 'El coche ya tiene una reserva en esas fechas' })
             }
 
             const days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1
@@ -78,7 +99,7 @@ export const reservationController = {
                 data: { reservation, checkoutUrl: session.url }
             })
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ ok: false, msg: 'Error al crear la reserva' })
         }
     },
@@ -101,6 +122,10 @@ export const reservationController = {
             if (!reservation) {
                 return res.status(404).json({ ok: false, msg: 'Reserva no encontrada' })
             }
+            const ownerId = reservation.user?.toString?.() ?? String(reservation.user)
+            if (req.user.role !== 'admin' && ownerId !== req.user.id) {
+                return res.status(403).json({ ok: false, msg: 'No autorizado' })
+            }
             res.status(200).json({ ok: true, msg: 'Obteniendo reserva', data: reservation })
         } catch (error) {
             res.status(500).json({ ok: false, msg: 'Error al obtener la reserva' })
@@ -121,6 +146,9 @@ export const reservationController = {
 
     cancel: async (req, res) => {
         try {
+            if (!isValidId(req.params.id)) {
+                return res.status(400).json({ ok: false, msg: 'Id inválido' })
+            }
             const reservation = await Reservation.findById(req.params.id)
             if (!reservation) {
                 return res.status(404).json({ ok: false, msg: 'Reserva no encontrada' })

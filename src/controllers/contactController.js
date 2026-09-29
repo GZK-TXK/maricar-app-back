@@ -7,10 +7,11 @@ export const contactController = {
         try {
             const transporter = await getTransporter()
             const info = await transporter.sendMail(reservationEmail(req.body))
-            console.log("Email preview URL:", nodemailer.getTestMessageUrl(info))
+            const previewUrl = nodemailer.getTestMessageUrl(info)
+            if (previewUrl) console.log("Email preview URL:", previewUrl)
             res.json({ ok: true, msg: "Reserva enviada correctamente" })
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ ok: false, msg: "Error al enviar la reserva" })
         }
     }
