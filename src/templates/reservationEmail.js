@@ -1,12 +1,4 @@
-const escapeHtml = (value = "") =>
-    String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;")
-
-const stripNewlines = (value = "") => String(value).replace(/[\r\n]+/g, " ").trim()
+import { escapeHtml, stripNewlines } from "./emailUtils.js"
 
 export const reservationEmail = ({ name, email, phone, carInfo, message }) => ({
     from: `"MariCar" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || "no-reply@maricar.com"}>`,

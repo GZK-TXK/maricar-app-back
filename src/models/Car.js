@@ -33,6 +33,10 @@ const carSchema = new Schema({
     type: String,
     default: "",
   },
+  images: {
+    type: [String],
+    default: [],
+  },
   available: {
     type: Boolean,
     default: false,

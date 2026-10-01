@@ -46,6 +46,14 @@ const userSchema = new Schema({
         required: true,
         trim: true,
         maxlength: 20,
+    },
+    resetPasswordToken: {
+        type: String,
+        select: false,
+    },
+    resetPasswordExpires: {
+        type: Date,
+        select: false,
     }
 })
 

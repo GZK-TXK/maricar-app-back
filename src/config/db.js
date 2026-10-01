@@ -1,15 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
+import { env } from "./env.js"
 
 const mongoConexion = async () => {
   try {
-        await mongoose.connect(process.env.MONGODB_URI);
-
-      console.log("Data Base succesfully connected.")
-    
+    await mongoose.connect(env.mongoUri)
+    console.log("Data Base succesfully connected.")
   } catch (error) {
-      console.log(error)
-      process.exit(1);
+    console.error(error)
+    process.exit(1)
   }
-};
+}
 
 export default mongoConexion

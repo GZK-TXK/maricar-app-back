@@ -1,8 +1,25 @@
 import Reservation from '../models/Reservation.js'
 import Cars from '../models/Car.js'
+import User from '../models/User.js'
+import nodemailer from 'nodemailer'
 import { stripe } from '../config/stripe.js'
+import { getTransporter } from '../config/email.js'
+import { reservationConfirmationEmail } from '../templates/reservationConfirmationEmail.js'
 
 const rangesOverlap = (aStart, aEnd, bStart, bEnd) => aStart <= bEnd && aEnd >= bStart
+
+const sendConfirmation = async (reservation, car) => {
+    try {
+        const user = await User.findById(reservation.user)
+        if (!user) return
+        const transporter = await getTransporter()
+        const info = await transporter.sendMail(reservationConfirmationEmail({ user, car, reservation }))
+        const previewUrl = nodemailer.getTestMessageUrl(info)
+        if (previewUrl) console.log('Email de confirmación (preview):', previewUrl)
+    } catch (error) {
+        console.error('Error al enviar el email de confirmación:', error.message)
+    }
+}
 
 export const stripeWebhook = async (req, res) => {
     const sig = req.headers["stripe-signature"]
@@ -63,6 +80,8 @@ export const stripeWebhook = async (req, res) => {
                 end: reservation.endDate,
             })
             await car.save()
+
+            await sendConfirmation(reservation, car)
         } else {
             console.log(`Unhandled event type ${event.type}`)
         }

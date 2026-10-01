@@ -14,8 +14,11 @@ reservationRoutes.get("/my", authValidation, reservationController.getMyReservat
 // Reserva por session_id de Stripe (página de confirmación)
 reservationRoutes.get("/session/:sessionId", authValidation, reservationController.getBySession)
 
+// Detalle de una reserva (dueño o admin)
+reservationRoutes.get("/:id", authValidation, reservationController.getOne)
+
 // Todas las reservas (admin)
 reservationRoutes.get("/", authValidation, adminValidation, reservationController.getAll)
 
-// Cancelar reserva (admin)
-reservationRoutes.patch("/:id/cancel", authValidation, adminValidation, reservationController.cancel)
+// Cancelar reserva (dueño o admin)
+reservationRoutes.patch("/:id/cancel", authValidation, reservationController.cancel)

@@ -33,6 +33,15 @@ export const validateLogin = [
     check("password", "La contraseña es obligatoria").notEmpty().isString(),
 ]
 
+export const validateForgotPassword = [
+    check("email", "Email inválido").trim().isEmail().normalizeEmail(),
+]
+
+export const validateResetPassword = [
+    check("token", "Token requerido").notEmpty().isString(),
+    passwordRule,
+]
+
 export const validateUserCreate = [
     check("name", "El nombre es obligatorio").trim().notEmpty().isString().isLength({ max: 80 }),
     check("surname").optional({ checkFalsy: true }).trim().isString().isLength({ max: 80 }),
